@@ -1,0 +1,94 @@
+.send-otp-button:hover {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.icon-search {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("/assets/img/ic-search.svg");
+}
+
+.text-1125 {
+  font-size: 1.125rem !important;
+}
+
+.justify-center {
+  justify-content: center !important;
+}
+
+.fs-large {
+  font-size: large;
+}
+
+.fs-medium {
+  font-size: medium;
+}
+
+.w-5 {
+  width: 5%;
+}
+
+.flash-message-success {
+  align-items: center;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  font-size: 0.75rem;
+  font-weight: 400;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+
+  background-color: #21b5311f;
+  border: 1px solid #fecbcb;
+  color: #21b5311f;
+}
+
+.text-neutral {
+  color: var(--bs-neutral-70) !important;
+}
+
+.input-file-box .input-zip-preview {
+  background: url("https://register-merchant-portal.jatelindo.com/assets/img/zip-icon.png"),
+    var(--bs-white);
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.input-file-box .input-zip-preview {
+  border-radius: 0.6rem;
+  display: block;
+  height: 3.125rem;
+  object-fit: contain;
+  width: 3.125rem;
+}
+
+.red-art {
+  color: red !important;
+  margin-left: 0.3rem !important;
+}
+
+.w-14 {
+  width: 14rem !important;
+}
+
+.w-20-vw {
+  width: 20vw !important;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.align-items-end {
+  align-items: end !important;
+}

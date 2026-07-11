@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="/assets/css/error.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="error-wrapper">
+        <img src="/assets/img/img_error_message_general.png" alt="General Error" />
+        <div class="d-flex flex-column">
+            <h3>Terjadi Kesalahan Sistem</h3>
+            <p>Maaf, permintaan Anda tidak dapat diproses saat ini. Silakan coba lagi beberapa saat lagi.</p>
+            <p><?= $this->message ?></p>
+        </div>
+        <a class="back-button btn btn-primary">Kembali</a>
+    </div>
+</body>
+
+<script nonce="<?= $_SESSION['cspNonce'] ?>" type="text/javascript">
+    $(function () {
+        $(".back-button").on("click", function (e) {
+            history.back();
+        });
+    });
+</script>
+
+</html>

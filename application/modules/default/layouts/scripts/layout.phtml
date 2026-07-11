@@ -1,0 +1,146 @@
+<?php $userWeb = $_SESSION["user_web"] ?? null; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>
+        <?php
+        if ($this->title) {
+            echo $this->escape($this->title) . " - Network Lab";
+        } else {
+            echo "Network Lab";
+        }
+        ?>
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="<?= $this->baseUrl('/assets/css/styles.min.css'); ?>" rel="stylesheet" />
+    <link href="<?= $this->baseUrl('/assets/css/custom.css'); ?>" rel="stylesheet" />
+    <script src="<?= $this->baseUrl('/assets/js/custom.js'); ?>"></script>
+    <script src="<?= $this->baseUrl('/assets/js/app.min.js'); ?>"></script>
+</head>
+
+<body>
+    <nav class="navbar-custom navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/">
+                Network Lab
+            </a>
+            <?php if ($userWeb): ?>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-bold"><?= $this->escape($userWeb["name"] ?? '') ?></span>
+                    <a href="/index/logout" class="btn btn-outline-base">Keluar</a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </nav>
+
+    <main class="main bg-soft-white">
+        <div class="content">
+            <?php echo $this->layout()->content; ?>
+        </div>
+    </main>
+
+    <div class="modal fade" id="modalError" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalErrorLabel">
+        <div class="modal-dialog modal-dialog-centered modal-fit">
+            <div class="modal-content">
+                <div class="modal-body px-5 py-4">
+                    <div class="d-flex flex-column align-items-center gap-4">
+                        <div class="d-flex align-items-center py-2 px-4 mx-3">
+                            <img src="<?= $this->baseUrl('/assets/img/ic-toast-error.svg'); ?>" width="67px"
+                                height="67px" alt="icon failed" />
+                        </div>
+                        <div class="d-flex flex-column align-items-center gap-2">
+                            <h3 id="modalFailedTitle" class="text-neutral-100 fs-7 fw-bold mb-0 text-center">
+                                <?= $this->escape($_SESSION["modalError"] ?? '') ?>
+                            </h3>
+                            <p class="text-neutral-70 fs-8 mb-0 text-center">
+                                <?php // Upload validator messages embed the user's filename — escape
+                                echo $this->escape($_SESSION["modalErrorMessage"] ?? ''); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalError">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAlert" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalAlertLabel">
+        <div class="modal-dialog modal-dialog-centered modal-fit">
+            <div class="modal-content">
+                <div class="modal-body px-5 py-4">
+                    <div class="d-flex flex-column align-items-center gap-4">
+                        <div class="d-flex align-items-center py-2 px-4 mx-3">
+                            <img src="<?= $this->baseUrl('/assets/img/ic-toast-warning.svg'); ?>" width="67px"
+                                height="67px" alt="icon alert" />
+                        </div>
+                        <div class="d-flex flex-column align-items-center gap-2">
+                            <h3 id="modalAlertTitle" class="text-neutral-100 fs-7 fw-bold mb-0 text-center">
+                                <?= $this->escape($_SESSION["modalAlert"] ?? '') ?>
+                            </h3>
+                            <p class="text-neutral-70 fs-8 mb-0 text-center">
+                                <?= $this->escape($_SESSION["modalAlertMessage"] ?? '') ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalAlert">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalLoading" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalLoadingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fit">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex flex-column align-items-center gap-4 px-2 pt-2">
+                        <span class="spinner-progress"></span>
+                        <h3 id="modalLoadingTitle" class="text-neutral-100 fs-7 fw-bold mb-0">
+                            Memproses...
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script nonce="<?= $_SESSION['cspNonce'] ?>" type="text/javascript">
+        $(function () {
+            <?php if (isset($_SESSION["modalError"])): ?>
+                let modalError = new bootstrap.Modal(
+                    document.querySelector("#modalError")
+                );
+
+                modalError.show();
+                <?php
+                unset($_SESSION["modalError"]);
+                unset($_SESSION["modalErrorMessage"]);
+            endif; ?>
+
+            <?php if (isset($_SESSION["modalAlert"])): ?>
+                let modalAlert = new bootstrap.Modal(
+                    document.querySelector("#modalAlert")
+                );
+
+                modalAlert.show();
+                <?php
+                unset($_SESSION["modalAlert"]);
+                unset($_SESSION["modalAlertMessage"]);
+            endif; ?>
+        });
+    </script>
+</body>
+
+</html>

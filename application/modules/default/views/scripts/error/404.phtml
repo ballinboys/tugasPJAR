@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="<?= $this->baseUrl('/assets/css/error.css'); ?>" rel="stylesheet" />
+    <script src="<?= $this->baseUrl('/assets/js/error.js'); ?>"></script>
+</head>
+
+<body>
+    <div class="error-wrapper">
+        <img src="/assets/img/img_error_message_404.png" alt="404 Error" />
+        <div class="d-flex flex-column">
+            <h3>Halaman tidak ditemukan</h3>
+            <p>Maaf, halaman yang Anda cari tidak tersedia atau telah dipindahkan.</p>
+        </div>
+        <a class="back-button btn btn-primary">Kembali</a>
+    </div>
+</body>
+
+<script nonce="<?= $_SESSION['cspNonce'] ?>" type="text/javascript">
+    $(function () {
+        $(".back-button").on("click", function (e) {
+            history.back();
+        });
+    });
+</script>
+
+</html>

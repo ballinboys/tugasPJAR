@@ -1,0 +1,13 @@
+.idea
+.DS_Store
+*.log
+.vscode
+*.xlsx
+enc_key.txt
+flows
+public/.htaccess
+backend/data/uploads/*
+backend/data/media/*
+!backend/data/uploads/.gitkeep
+!backend/data/media/.gitkeep
+application/tmp

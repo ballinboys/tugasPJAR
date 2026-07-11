@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title><?= $this->title; ?> - Merchant Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="<?= $this->baseUrl('/assets/css/styles.min.css'); ?>" rel="stylesheet" />
+    <script src="<?= $this->baseUrl('/assets/js/custom.js'); ?>"></script>
+    <script src="<?= $this->baseUrl('/assets/js/app.min.js'); ?>"></script>
+</head>
+
+<body>
+    <main class="main bg-soft-white">
+        <?= $this->layout()->content; ?>
+    </main>
+</body>
+
+</html>

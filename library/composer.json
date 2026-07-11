@@ -1,0 +1,8 @@
+{
+  "require": {
+    "ramsey/uuid": "^4.7",
+    "endroid/qr-code": "^4.8",
+    "robthree/twofactorauth": "^1.8",
+    "phpoffice/phpspreadsheet": "^1.29"
+  }
+}

@@ -1,0 +1,231 @@
+<?php $user = $this->user; ?>
+
+<div class="content-header">
+    <h1 class="header-title">Network Programming Lab</h1>
+</div>
+
+<div class="content-body">
+    <div class="row g-4">
+
+        <!-- Kolom 1: Autentikasi -->
+        <div class="col-12 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="fs-6 fw-bold mb-3">Akun</h3>
+
+                    <?php if ($user): ?>
+
+                        <p class="mb-1 fw-bold"><?= $this->escape($user['name']) ?></p>
+                        <p class="text-neutral-70 mb-4"><?= $this->escape($user['email']) ?></p>
+                        <a href="/index/logout" class="btn btn-outline-base w-100">Keluar</a>
+
+                    <?php elseif ($this->resetToken): ?>
+
+                        <form id="reset-form" action="/auth/reset" method="POST" class="form form-validation"
+                            autocomplete="off">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <input type="hidden" name="token" value="<?= $this->escape($this->resetToken) ?>" />
+                            <p class="fw-bold mb-2">Atur ulang password</p>
+                            <div class="d-flex flex-column gap-2">
+                                <input type="password" name="password" class="form-control"
+                                    placeholder="Password baru (min. 8 karakter)" required minlength="8"
+                                    autocomplete="new-password" />
+                                <input type="password" name="password_confirm" class="form-control"
+                                    placeholder="Ulangi password baru" required minlength="8"
+                                    autocomplete="new-password" />
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Simpan Password Baru
+                                </button>
+                                <a href="/" class="btn btn-link p-0">Batal</a>
+                            </div>
+                        </form>
+
+                    <?php else: ?>
+
+                        <form id="login-form" action="/index/login" method="POST" class="form form-validation mb-4"
+                            autocomplete="off">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <p class="fw-bold mb-2">Masuk</p>
+                            <div class="d-flex flex-column gap-2">
+                                <input type="email" name="email" class="form-control" placeholder="Email" required
+                                    autocomplete="email" />
+                                <input type="password" name="password" class="form-control" placeholder="Password"
+                                    required autocomplete="current-password" />
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Masuk
+                                </button>
+                            </div>
+                        </form>
+
+                        <hr />
+
+                        <form id="register-form" action="/auth/register" method="POST" class="form form-validation mb-4"
+                            autocomplete="off">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <p class="fw-bold mb-2">Daftar</p>
+                            <div class="d-flex flex-column gap-2">
+                                <input name="name" class="form-control" placeholder="Nama" required maxlength="100"
+                                    autocomplete="name" />
+                                <input type="email" name="email" class="form-control" placeholder="Email" required
+                                    maxlength="190" autocomplete="email" />
+                                <input type="password" name="password" class="form-control"
+                                    placeholder="Password (min. 8 karakter)" required minlength="8"
+                                    autocomplete="new-password" />
+                                <input type="password" name="password_confirm" class="form-control"
+                                    placeholder="Ulangi password" required minlength="8" autocomplete="new-password" />
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Daftar
+                                </button>
+                            </div>
+                        </form>
+
+                        <hr />
+
+                        <form id="forgot-form" action="/auth/forgot" method="POST" class="form form-validation"
+                            autocomplete="off">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <p class="fw-bold mb-2">Lupa password</p>
+                            <div class="d-flex flex-column gap-2">
+                                <input type="email" name="email" class="form-control" placeholder="Email terdaftar"
+                                    required autocomplete="email" />
+                                <button type="submit" class="btn btn-outline-base" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Kirim Tautan Reset
+                                </button>
+                            </div>
+                        </form>
+
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom 2: Upload & daftar file -->
+        <div class="col-12 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h3 class="fs-6 fw-bold mb-0">File</h3>
+                        <?php if ($user): ?>
+                            <a href="/" class="btn btn-link p-0">Refresh</a>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if (!$user): ?>
+                        <p class="text-neutral-70 mb-0">Masuk untuk mengunggah dan melihat file.</p>
+                    <?php else: ?>
+
+                        <form action="/file/upload" method="POST" enctype="multipart/form-data" class="mb-4">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <div class="d-flex flex-column gap-2">
+                                <input type="file" name="file" class="form-control" required
+                                    accept=".csv,.xlsx,.xls,.txt,.pdf" />
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Upload File
+                                </button>
+                            </div>
+                            <p class="text-xs text-dark-70 fw-light mt-2 mb-0">
+                                Maksimal 50MB (csv, xlsx, xls, txt, pdf)
+                            </p>
+                        </form>
+
+                        <?php if (count($this->files) === 0): ?>
+                            <p class="text-neutral-70 mb-0">Belum ada file.</p>
+                        <?php else: ?>
+                            <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                                <?php foreach ($this->files as $file): ?>
+                                    <li class="d-flex align-items-center justify-content-between gap-2">
+                                        <span class="text-break">
+                                            <?= $this->escape($file['original_name']) ?>
+                                            <span class="text-neutral-70">
+                                                (<?= number_format((float) $file['size_bytes'], 0, ',', '.') ?> bytes)
+                                            </span>
+                                        </span>
+                                        <a href="/file/download/id/<?= (int) $file['id'] ?>" class="btn btn-link p-0">
+                                            Unduh
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom 3: Upload & streaming media -->
+        <div class="col-12 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h3 class="fs-6 fw-bold mb-0">Media</h3>
+                        <?php if ($user): ?>
+                            <a href="/" class="btn btn-link p-0">Refresh</a>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if (!$user): ?>
+                        <p class="text-neutral-70 mb-0">Masuk untuk mengunggah dan memutar media.</p>
+                    <?php else: ?>
+
+                        <form action="/media/upload" method="POST" enctype="multipart/form-data" class="mb-4">
+                            <?= Default_Model_Apps::csrfField() ?>
+                            <div class="d-flex flex-column gap-2">
+                                <input type="file" name="media" class="form-control" required
+                                    accept=".mp4,.webm,.mp3,.wav,.ogg" />
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalLoading">
+                                    Upload Media
+                                </button>
+                            </div>
+                            <p class="text-xs text-dark-70 fw-light mt-2 mb-0">
+                                Maksimal 50MB (mp4, webm, mp3, wav, ogg)
+                            </p>
+                        </form>
+
+                        <?php if (count($this->media) === 0): ?>
+                            <p class="text-neutral-70 mb-0">Belum ada media.</p>
+                        <?php else: ?>
+                            <div class="d-flex flex-column gap-3">
+                                <?php foreach ($this->media as $item): ?>
+                                    <div>
+                                        <p class="mb-1 text-break">
+                                            <?= $this->escape($item['original_name']) ?>
+                                            <span class="text-neutral-70">
+                                                (<?= number_format((float) $item['size_bytes'], 0, ',', '.') ?> bytes)
+                                            </span>
+                                        </p>
+                                        <?php if (strpos($item['mime'], 'video/') === 0): ?>
+                                            <video controls preload="metadata" class="w-100"
+                                                src="/media/stream/id/<?= (int) $item['id'] ?>"></video>
+                                        <?php else: ?>
+                                            <audio controls preload="metadata" class="w-100"
+                                                src="/media/stream/id/<?= (int) $item['id'] ?>"></audio>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script nonce="<?= $_SESSION['cspNonce'] ?>" type="text/javascript">
+    $(function () {
+        ["#login-form", "#register-form", "#forgot-form", "#reset-form"].forEach(function (id) {
+            if (document.querySelector(id)) {
+                app.FormValidation.init(id);
+            }
+        });
+    });
+</script>
