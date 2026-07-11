@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant B as Browser (elemen video)
+    participant F as Frontend :8081
+    participant A as Backend API :8082
+    participant S as Penyimpanan data/media
+
+    B->>F: GET /media/stream/id/5<br/>Range: bytes=0-
+    F->>A: GET /media/stream/id/5?user_id=1<br/>Authorization + X-Timestamp + X-Signature + Range
+    A->>A: Verifikasi Basic Auth, timestamp, HMAC
+    A->>A: Cek kepemilikan file di MySQL (by id)
+    A->>S: fopen + fseek sesuai Range
+    A-->>F: 206 Partial Content<br/>Content-Range: bytes 0-.../ukuran
+    F-->>B: 206 diteruskan (relay per 8KB)
+    Note over B,F: Pengguna menggeser (seek) posisi video
+    B->>F: GET /media/stream/id/5<br/>Range: bytes=1048576-
+    F->>A: Range diteruskan + signature baru
+    A-->>F: 206 Content-Range: bytes 1048576-.../ukuran
+    F-->>B: Video melompat tanpa mengunduh ulang seluruh file

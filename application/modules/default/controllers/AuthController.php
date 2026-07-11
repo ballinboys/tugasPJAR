@@ -47,10 +47,13 @@ class Default_AuthController extends Zend_Controller_Action
 
         try {
             $request = $this->getRequest();
+            // Behind Cloudflare Tunnel getScheme() sees plain HTTP; trust the
+            // proxy's X-Forwarded-Proto so the emailed link keeps https.
+            $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? $request->getScheme();
             $res = Default_Model_Api::post('/auth/forgot', [
                 'email' => strtolower(trim((string) $request->getPost('email'))),
                 // The backend emails a link back to this frontend
-                'reset_url_base' => $request->getScheme() . '://' . $request->getHttpHost(),
+                'reset_url_base' => $scheme . '://' . $request->getHttpHost(),
             ]);
 
             if ($res['status'] === 200) {

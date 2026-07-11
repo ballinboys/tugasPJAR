@@ -1,0 +1,14 @@
+flowchart TD
+    A["Pengguna mengisi form login<br/>(email + password)"] --> B["Browser POST /index/login<br/>ke Frontend :8081"]
+    B --> C{"Token CSRF valid?"}
+    C -- "Tidak" --> X["Respons 400<br/>Invalid CSRF token"]
+    C -- "Ya" --> D["Frontend kirim POST /auth/login ke Backend :8082<br/>+ Authorization, X-Timestamp, X-Signature"]
+    D --> E{"ApiAuth: Basic Auth,<br/>timestamp, dan HMAC valid?"}
+    E -- "Tidak" --> F["Backend balas 401 Unauthorized"]
+    F --> G["Modal: Login gagal"]
+    E -- "Ya" --> H{"password_verify cocok<br/>dengan hash bcrypt di MySQL?"}
+    H -- "Tidak" --> I["Backend balas 401<br/>Email atau password salah"]
+    I --> G
+    H -- "Ya" --> J["Backend balas 200 + identitas<br/>(id, name, email)"]
+    J --> K["Frontend regenerasi session id<br/>dan simpan identitas di sesi"]
+    K --> L["Redirect ke halaman utama<br/>(tiga kolom aktif)"]

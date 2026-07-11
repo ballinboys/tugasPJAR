@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph CLIENT["Sisi Klien"]
+        B["Browser<br/>(Pengguna)"]
+    end
+
+    subgraph FE["FE - http://localhost:8081"]
+        F["Aplikasi ZF1<br/>Sesi + UI + CSRF<br/>(tanpa database)"]
+    end
+
+    subgraph BE["BE - http://localhost:8082"]
+        A["Aplikasi ZF1<br/>Plugin ApiAuth<br/>(Basic Auth + HMAC)"]
+        DB[("MySQL<br/>networking_lab")]
+        ST[/"Penyimpanan file<br/>data/uploads, data/media"/]
+    end
+
+    G["Gmail SMTP<br/>smtp.gmail.com:587"]
+
+    B -- "HTTP<br/>(HTML, form POST)" --> F
+    F -- "HTTP + Basic Auth + Signature<br/>(JSON / multipart / biner)" --> A
+    A --> DB
+    A --> ST
+    A -- "SMTP over TLS" --> G
