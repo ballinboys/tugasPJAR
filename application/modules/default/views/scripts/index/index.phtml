@@ -1,7 +1,35 @@
 <?php $user = $this->user; ?>
 
-<div class="content-header">
+<div class="content-header hero-banner mb-4">
     <h1 class="header-title">Network Programming Lab</h1>
+    <p class="header-sub">
+        Aplikasi client-server sederhana: frontend ini menangani sesi dan tampilan,
+        sedangkan seluruh data (akun, file, media) disimpan dan diproses oleh backend API
+        terpisah melalui HTTP dengan tanda tangan HMAC.
+    </p>
+    <div class="hero-tags">
+        <span class="hero-tag">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="10.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+                <path d="M8.5 10.5V7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5V10.5" stroke="currentColor" stroke-width="1.4" />
+            </svg>
+            Autentikasi
+        </span>
+        <span class="hero-tag">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 3.5H14L18 7.5V19.5C18 20.0523 17.5523 20.5 17 20.5H6.5C5.94772 20.5 5.5 20.0523 5.5 19.5V4.5C5.5 3.94772 5.94772 3.5 6.5 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                <path d="M14 3.5V7.5H18" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+            Berbagi File
+        </span>
+        <span class="hero-tag">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10.2 9L15 12L10.2 15V9Z" fill="currentColor" />
+            </svg>
+            Streaming Media
+        </span>
+    </div>
 </div>
 
 <div class="content-body">
@@ -9,17 +37,33 @@
 
         <!-- Kolom 1: Autentikasi -->
         <div class="col-12 col-lg-4">
-            <div class="card h-100">
+            <div class="card card-elevated h-100">
                 <div class="card-body">
-                    <h3 class="fs-6 fw-bold mb-3">Akun</h3>
 
                     <?php if ($user): ?>
 
-                        <p class="mb-1 fw-bold"><?= $this->escape($user['name']) ?></p>
-                        <p class="text-neutral-70 mb-4"><?= $this->escape($user['email']) ?></p>
+                        <div class="card-title-group mb-4">
+                            <span class="user-avatar" style="height:2.75rem;width:2.75rem;font-size:1rem;">
+                                <?= $this->escape(mb_strtoupper(mb_substr((string) $user['name'], 0, 1))) ?>
+                            </span>
+                            <div>
+                                <p class="mb-0 fw-bold"><?= $this->escape($user['name']) ?></p>
+                                <p class="text-neutral-70 mb-0 text-xs"><?= $this->escape($user['email']) ?></p>
+                            </div>
+                        </div>
                         <a href="/index/logout" class="btn btn-outline-base w-100">Keluar</a>
 
                     <?php elseif ($this->resetToken): ?>
+
+                        <div class="card-title-group mb-3">
+                            <span class="card-icon card-icon-primary">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="6" y="10.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+                                    <path d="M8.5 10.5V7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5V10.5" stroke="currentColor" stroke-width="1.4" />
+                                </svg>
+                            </span>
+                            <h3 class="fs-6 fw-bold mb-0">Akun</h3>
+                        </div>
 
                         <form id="reset-form" action="/auth/reset" method="POST" class="form form-validation"
                             autocomplete="off">
@@ -43,60 +87,102 @@
 
                     <?php else: ?>
 
-                        <form id="login-form" action="/index/login" method="POST" class="form form-validation mb-4"
-                            autocomplete="off">
-                            <?= Default_Model_Apps::csrfField() ?>
-                            <p class="fw-bold mb-2">Masuk</p>
-                            <div class="d-flex flex-column gap-2">
-                                <input type="email" name="email" class="form-control" placeholder="Email" required
-                                    autocomplete="email" />
-                                <input type="password" name="password" class="form-control" placeholder="Password"
-                                    required autocomplete="current-password" />
-                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#modalLoading">
+                        <div class="card-title-group mb-3">
+                            <span class="card-icon card-icon-primary">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="6" y="10.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+                                    <path d="M8.5 10.5V7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5V10.5" stroke="currentColor" stroke-width="1.4" />
+                                </svg>
+                            </span>
+                            <h3 class="fs-6 fw-bold mb-0">Akun</h3>
+                        </div>
+
+                        <ul class="nav nav-pills auth-tabs mb-3" id="authTabs" role="tablist">
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link active w-100" id="tab-login-btn" data-bs-toggle="pill"
+                                    data-bs-target="#tab-login" type="button" role="tab" aria-controls="tab-login"
+                                    aria-selected="true">
                                     Masuk
                                 </button>
-                            </div>
-                        </form>
-
-                        <hr />
-
-                        <form id="register-form" action="/auth/register" method="POST" class="form form-validation mb-4"
-                            autocomplete="off">
-                            <?= Default_Model_Apps::csrfField() ?>
-                            <p class="fw-bold mb-2">Daftar</p>
-                            <div class="d-flex flex-column gap-2">
-                                <input name="name" class="form-control" placeholder="Nama" required maxlength="100"
-                                    autocomplete="name" />
-                                <input type="email" name="email" class="form-control" placeholder="Email" required
-                                    maxlength="190" autocomplete="email" />
-                                <input type="password" name="password" class="form-control"
-                                    placeholder="Password (min. 8 karakter)" required minlength="8"
-                                    autocomplete="new-password" />
-                                <input type="password" name="password_confirm" class="form-control"
-                                    placeholder="Ulangi password" required minlength="8" autocomplete="new-password" />
-                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#modalLoading">
+                            </li>
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link w-100" id="tab-register-btn" data-bs-toggle="pill"
+                                    data-bs-target="#tab-register" type="button" role="tab" aria-controls="tab-register"
+                                    aria-selected="false">
                                     Daftar
                                 </button>
-                            </div>
-                        </form>
-
-                        <hr />
-
-                        <form id="forgot-form" action="/auth/forgot" method="POST" class="form form-validation"
-                            autocomplete="off">
-                            <?= Default_Model_Apps::csrfField() ?>
-                            <p class="fw-bold mb-2">Lupa password</p>
-                            <div class="d-flex flex-column gap-2">
-                                <input type="email" name="email" class="form-control" placeholder="Email terdaftar"
-                                    required autocomplete="email" />
-                                <button type="submit" class="btn btn-outline-base" data-bs-toggle="modal"
-                                    data-bs-target="#modalLoading">
-                                    Kirim Tautan Reset
+                            </li>
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link w-100" id="tab-forgot-btn" data-bs-toggle="pill"
+                                    data-bs-target="#tab-forgot" type="button" role="tab" aria-controls="tab-forgot"
+                                    aria-selected="false">
+                                    Lupa
                                 </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="authTabsContent">
+                            <div class="tab-pane fade show active" id="tab-login" role="tabpanel"
+                                aria-labelledby="tab-login-btn">
+                                <form id="login-form" action="/index/login" method="POST" class="form form-validation"
+                                    autocomplete="off">
+                                    <?= Default_Model_Apps::csrfField() ?>
+                                    <div class="d-flex flex-column gap-2">
+                                        <input type="email" name="email" class="form-control" placeholder="Email"
+                                            required autocomplete="email" />
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="Password" required autocomplete="current-password" />
+                                        <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#modalLoading">
+                                            Masuk
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+
+                            <div class="tab-pane fade" id="tab-register" role="tabpanel"
+                                aria-labelledby="tab-register-btn">
+                                <form id="register-form" action="/auth/register" method="POST"
+                                    class="form form-validation" autocomplete="off">
+                                    <?= Default_Model_Apps::csrfField() ?>
+                                    <div class="d-flex flex-column gap-2">
+                                        <input name="name" class="form-control" placeholder="Nama" required
+                                            maxlength="100" autocomplete="name" />
+                                        <input type="email" name="email" class="form-control" placeholder="Email"
+                                            required maxlength="190" autocomplete="email" />
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="Password (min. 8 karakter)" required minlength="8"
+                                            autocomplete="new-password" />
+                                        <input type="password" name="password_confirm" class="form-control"
+                                            placeholder="Ulangi password" required minlength="8"
+                                            autocomplete="new-password" />
+                                        <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#modalLoading">
+                                            Daftar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tab-pane fade" id="tab-forgot" role="tabpanel"
+                                aria-labelledby="tab-forgot-btn">
+                                <form id="forgot-form" action="/auth/forgot" method="POST" class="form form-validation"
+                                    autocomplete="off">
+                                    <?= Default_Model_Apps::csrfField() ?>
+                                    <div class="d-flex flex-column gap-2">
+                                        <p class="text-neutral-70 text-xs mb-0">
+                                            Masukkan email terdaftar, tautan reset akan dikirim.
+                                        </p>
+                                        <input type="email" name="email" class="form-control"
+                                            placeholder="Email terdaftar" required autocomplete="email" />
+                                        <button type="submit" class="btn btn-outline-base" data-bs-toggle="modal"
+                                            data-bs-target="#modalLoading">
+                                            Kirim Tautan Reset
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                     <?php endif; ?>
                 </div>
@@ -105,12 +191,26 @@
 
         <!-- Kolom 2: Upload & daftar file -->
         <div class="col-12 col-lg-4">
-            <div class="card h-100">
+            <div class="card card-elevated h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h3 class="fs-6 fw-bold mb-0">File</h3>
+                        <div class="card-title-group">
+                            <span class="card-icon card-icon-success">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 3.5H14L18 7.5V19.5C18 20.0523 17.5523 20.5 17 20.5H6.5C5.94772 20.5 5.5 20.0523 5.5 19.5V4.5C5.5 3.94772 5.94772 3.5 6.5 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                    <path d="M14 3.5V7.5H18" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                    <path d="M8.5 12H14.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                    <path d="M8.5 15.5H14.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                </svg>
+                            </span>
+                            <h3 class="fs-6 fw-bold mb-0">File</h3>
+                        </div>
                         <?php if ($user): ?>
-                            <a href="/" class="btn btn-link p-0">Refresh</a>
+                            <a href="/" class="btn-icon-only" title="Refresh">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 12a8 8 0 0 1 13.657-5.657L20 8.5M20 8.5V4.5M20 8.5H16M20 12a8 8 0 0 1-13.657 5.657L4 15.5M4 15.5V19.5M4 15.5H8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
                         <?php endif; ?>
                     </div>
 
@@ -134,19 +234,32 @@
                         </form>
 
                         <?php if (count($this->files) === 0): ?>
-                            <p class="text-neutral-70 mb-0">Belum ada file.</p>
+                            <div class="empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 13.5L6.5 5.5H17.5L20 13.5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                    <path d="M4 13.5H9L10 15.5H14L15 13.5H20V18.5C20 19.0523 19.5523 19.5 19 19.5H5C4.44772 19.5 4 19.0523 4 18.5V13.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                </svg>
+                                <p>Belum ada file.</p>
+                            </div>
                         <?php else: ?>
                             <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                                <?php foreach ($this->files as $file): ?>
-                                    <li class="d-flex align-items-center justify-content-between gap-2">
-                                        <span class="text-break">
-                                            <?= $this->escape($file['original_name']) ?>
-                                            <span class="text-neutral-70">
-                                                (<?= number_format((float) $file['size_bytes'], 0, ',', '.') ?> bytes)
+                                <?php foreach ($this->files as $file):
+                                    $ext = mb_substr(strtoupper((string) pathinfo($file['original_name'], PATHINFO_EXTENSION)), 0, 4) ?: 'FILE';
+                                    ?>
+                                    <li class="file-row">
+                                        <span class="file-badge"><?= $this->escape($ext) ?></span>
+                                        <span class="text-break flex-grow-1">
+                                            <span class="file-name d-block"><?= $this->escape($file['original_name']) ?></span>
+                                            <span class="file-meta">
+                                                <?= number_format((float) $file['size_bytes'], 0, ',', '.') ?> bytes
                                             </span>
                                         </span>
-                                        <a href="/file/download/id/<?= (int) $file['id'] ?>" class="btn btn-link p-0">
-                                            Unduh
+                                        <a href="/file/download/id/<?= (int) $file['id'] ?>" class="btn-icon-only"
+                                            title="Unduh">
+                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 4V15M12 15L8 11M12 15L16 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M5 17.5V18.5C5 19.6046 5.89543 20.5 7 20.5H17C18.1046 20.5 19 19.6046 19 18.5V17.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                            </svg>
                                         </a>
                                     </li>
                                 <?php endforeach; ?>
@@ -160,12 +273,24 @@
 
         <!-- Kolom 3: Upload & streaming media -->
         <div class="col-12 col-lg-4">
-            <div class="card h-100">
+            <div class="card card-elevated h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h3 class="fs-6 fw-bold mb-0">Media</h3>
+                        <div class="card-title-group">
+                            <span class="card-icon card-icon-warning">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4" />
+                                    <path d="M10.2 9L15 12L10.2 15V9Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <h3 class="fs-6 fw-bold mb-0">Media</h3>
+                        </div>
                         <?php if ($user): ?>
-                            <a href="/" class="btn btn-link p-0">Refresh</a>
+                            <a href="/" class="btn-icon-only" title="Refresh">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 12a8 8 0 0 1 13.657-5.657L20 8.5M20 8.5V4.5M20 8.5H16M20 12a8 8 0 0 1-13.657 5.657L4 15.5M4 15.5V19.5M4 15.5H8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
                         <?php endif; ?>
                     </div>
 
@@ -189,15 +314,21 @@
                         </form>
 
                         <?php if (count($this->media) === 0): ?>
-                            <p class="text-neutral-70 mb-0">Belum ada media.</p>
+                            <div class="empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 13.5L6.5 5.5H17.5L20 13.5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                    <path d="M4 13.5H9L10 15.5H14L15 13.5H20V18.5C20 19.0523 19.5523 19.5 19 19.5H5C4.44772 19.5 4 19.0523 4 18.5V13.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                                </svg>
+                                <p>Belum ada media.</p>
+                            </div>
                         <?php else: ?>
                             <div class="d-flex flex-column gap-3">
                                 <?php foreach ($this->media as $item): ?>
-                                    <div>
-                                        <p class="mb-1 text-break">
-                                            <?= $this->escape($item['original_name']) ?>
-                                            <span class="text-neutral-70">
-                                                (<?= number_format((float) $item['size_bytes'], 0, ',', '.') ?> bytes)
+                                    <div class="media-card">
+                                        <p class="mb-0 text-break">
+                                            <span class="file-name d-block"><?= $this->escape($item['original_name']) ?></span>
+                                            <span class="file-meta">
+                                                <?= number_format((float) $item['size_bytes'], 0, ',', '.') ?> bytes
                                             </span>
                                         </p>
                                         <?php if (strpos($item['mime'], 'video/') === 0): ?>

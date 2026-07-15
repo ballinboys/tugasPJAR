@@ -24,14 +24,35 @@
 
 <body>
     <nav class="navbar-custom navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                Network Lab
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="/">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="5" cy="5" r="2.5" fill="currentColor" />
+                        <circle cx="19" cy="5" r="2.5" fill="currentColor" />
+                        <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+                        <circle cx="5" cy="19" r="2.5" fill="currentColor" />
+                        <circle cx="19" cy="19" r="2.5" fill="currentColor" />
+                        <path d="M5 5L12 12M19 5L12 12M5 19L12 12M19 19L12 12" stroke="currentColor" stroke-width="1.4" />
+                    </svg>
+                </span>
+                <span class="brand-text d-flex flex-column">
+                    <span class="brand-title">Network Lab</span>
+                    <span class="brand-sub d-none d-sm-inline">Pemrograman Jaringan</span>
+                </span>
             </a>
             <?php if ($userWeb): ?>
-                <div class="d-flex align-items-center gap-3">
-                    <span class="fw-bold"><?= $this->escape($userWeb["name"] ?? '') ?></span>
-                    <a href="/index/logout" class="btn btn-outline-base">Keluar</a>
+                <div class="user-chip">
+                    <span class="user-avatar">
+                        <?= $this->escape(mb_strtoupper(mb_substr((string) ($userWeb["name"] ?? '?'), 0, 1))) ?>
+                    </span>
+                    <span class="d-none d-sm-flex flex-column">
+                        <span class="user-name fw-bold"><?= $this->escape($userWeb["name"] ?? '') ?></span>
+                        <span class="user-email"><?= $this->escape($userWeb["email"] ?? '') ?></span>
+                    </span>
+                    <a href="/index/logout" class="btn-icon-only" title="Keluar">
+                        <img src="<?= $this->baseUrl('/assets/img/ic-logout-sm.svg'); ?>" width="18" height="18" alt="Keluar" />
+                    </a>
                 </div>
             <?php endif; ?>
         </div>
@@ -42,6 +63,10 @@
             <?php echo $this->layout()->content; ?>
         </div>
     </main>
+
+    <footer class="site-footer">
+        Network Lab — Frontend (sesi &amp; UI) berkomunikasi dengan Backend API melalui HTTP + tanda tangan HMAC.
+    </footer>
 
     <div class="modal fade" id="modalError" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalErrorLabel">
         <div class="modal-dialog modal-dialog-centered modal-fit">
